@@ -1,0 +1,104 @@
+from google.colab import files
+files.upload()
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df  = pd.read_csv("dirty_iris.csv")
+df
+
+df.describe()
+
+df.info()
+
+row,col = df.shape
+print('No. of rows : {}\nNo. of columns : {}'.format(row,col))
+
+df.isnull().any()
+
+df.isnull().sum()
+
+df.duplicated().value_counts()
+
+#Replacin NaN,inf and inconsistent values with average
+df = df.iloc[:,:].replace(np.inf,np.nan)
+df = df.iloc[:,:].replace(np.nan,df.mean(numeric_only = True))
+df
+
+df.describe()
+#all inf and nan values handled - missing and inconsistent values
+
+df.boxplot()
+plt.show()
+
+numeric_columns = df.select_dtypes(['float64']).columns
+numeric_columns
+
+vrule1 = df['Species'].apply(lambda x: True if x=='setosa' or x=='versicolor' or x=='virginica' else False)
+vrule1.value_counts()
+
+vrule2 = df[numeric_columns].applymap(lambda y: True if y>=0 else False)
+vrule2.value_counts()
+
+def check_petal_length_twice_width(row):
+    return row['Petal.Length'] >= 2 * row['Petal.Width']
+
+vrule3 = df.apply(check_petal_length_twice_width, axis=1)
+vrule3.value_counts()
+
+vrule4 = df['Sepal.Length'].apply(lambda x: True if x<=30 else False)
+vrule4.value_counts()
+
+def check_sepal_petal_length(row):
+    return row['Sepal.Length'] > row['Petal.Length']
+
+vrule5 = df.apply(check_sepal_petal_length, axis=1)
+vrule5.value_counts()
+
+
+
+df.dtypes
+
+ q1 = df.quantile(0.25,numeric_only = True)
+q3 = df.quantile(0.75,numeric_only = True)
+IQR = q3 - q1
+IQR
+
+
+ Rule1 = df['Sepal.Length'].apply(lambda x:True if x>=q1['Sepal.Length']-1.5*IQR['Sepal.Length']
+                                 and x<=q3['Sepal.Length']+1.5*IQR['Sepal.Length']else False )
+Rule2 = df['Sepal.Width'].apply(lambda x:True if x>=q1['Sepal.Width']-1.5*IQR['Sepal.Width']
+                                 and x<=q3['Sepal.Width']+1.5*IQR['Sepal.Width']else False )
+Rule3 = df['Petal.Length'].apply(lambda x:True if x>=q1['Petal.Length']-1.5*IQR['Petal.Length']
+                                 and x<=q3['Petal.Length']+1.5*IQR['Petal.Length']else False )
+Rule4 = df['Petal.Width'].apply(lambda x:True if x>=q1['Petal.Width']-1.5*IQR['Petal.Width']
+                                 and x<=q3['Petal.Width']+1.5*IQR['Petal.Width']else False )
+
+data = {'Rule1':Rule1,'Rule2':Rule2,'Rule3':Rule3,'Rule4':Rule4}
+Rules = pd.DataFrame(data)
+Rules
+
+
+ Rules.astype(int).sum()
+
+ Rules.astype(int).sum().plot.bar()
+plt.show()
+
+
+
+outliers_ind = Rules.index[(Rules == 0).any(axis=1)].tolist()
+outliers_ind
+
+
+
+ df = df.drop(outliers_ind)
+df
+
+
+ df.boxplot()
+plt.show()
+
+
+
+ 
