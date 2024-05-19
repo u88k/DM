@@ -1,0 +1,72 @@
+import pandas as pd
+import numpy as np
+
+np.random.seed(0)
+df = pd.DataFrame({
+    'Age':np.random.randint(20,80,100),
+    'Income':np.random.randint(20000,100000,100)
+})
+df
+
+df.shape
+
+df.info()
+
+
+df.describe()
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+std_df = pd.DataFrame(scaler.fit_transform(df),columns=['Age','Income'])
+display(std_df)
+std_df.describe()
+
+#####################normalization#################
+
+
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+norm_df = pd.DataFrame(scaler.fit_transform(std_df),columns = ['Age','Income'])
+display(norm_df)
+
+
+##logarithmic function
+
+transformed_df = df.copy()
+transformed_df['Income'] = np.log(df['Income'])
+transformed_df
+
+##aggregation
+
+
+aggregated_df = df.groupby('Age').mean()
+aggregated_df = aggregated_df.reset_index()
+aggregated_df
+
+
+##discretizing
+
+bins = [19,30,50,100]
+labels = ['Young','Adult','Elderly']
+
+descretized_df = df.copy()
+descretized_df['Age group'] = pd.cut(descretized_df['Age'],bins = bins, labels = labels)
+descretized_df.head()
+
+
+###binarizing
+
+from sklearn.preprocessing import Binarizer
+t = 40
+b = Binarizer(threshold = t)
+binarized_df = df.copy()
+binarized_df['B_age'] = b.fit_transform(df[['Age']])
+binarized_df
+
+
+###sampling 10 %
+
+sampled_data = df.sample(frac=0.1,random_state = 1)
+sampled_data
+
+
