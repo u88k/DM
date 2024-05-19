@@ -1,0 +1,40 @@
+decision tree
+
+accuracy_dt = []
+Dtree = DecisionTreeClassifier(criterion = 'entropy')
+for i in range(10):
+  x_train, x_test, y_train, y_test = train_test_split(normalized_X,Y,test_size = 0.25)
+  Dtree.fit(x_train,y_train)
+  dtree_prediction = Dtree.predict(x_test)
+  accuracy_dt.append(accuracy_score(y_test, dtree_prediction))
+print(accuracy_dt)
+print("Average accuracy : ",np.mean(accuracy_dt))
+
+
+knn
+
+accuracy_dt = []
+Dtree = DecisionTreeClassifier(criterion = 'entropy')
+for i in range(10):
+  x_train, x_test, y_train, y_test = train_test_split(normalized_X,Y,test_size = 0.25)
+  Dtree.fit(x_train,y_train)
+  dtree_prediction = Dtree.predict(x_test)
+  accuracy_dt.append(accuracy_score(y_test, dtree_prediction))
+print(accuracy_dt)
+print("Average accuracy : ",np.mean(accuracy_dt))
+
+
+naive bayes
+
+
+accuracy_nb = []
+nbayes = GaussianNB()
+for i in range(10):
+  x_train, x_test, y_train, y_test = train_test_split(normalized_X,Y,test_size = 0.25)
+  nbayes.fit(x_train,y_train)
+  nb_prediction = nbayes.predict(x_test)
+  accuracy_nb.append(accuracy_score(y_test,nb_prediction))
+print(accuracy_nb)
+print("Average accuracy : ",np.mean(accuracy_nb))
+
+
