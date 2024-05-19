@@ -1,0 +1,26 @@
+!pip install efficient-apriori
+
+from efficient_apriori import apriori
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df1 = pd.read_csv("/content/drive/MyDrive/DseDatasets/groceries.csv")
+
+df1.head()
+
+df1.tail()
+
+df1.tail()
+
+newset1 = []
+#len(df1) = 9835 (number of records remains the same)
+for i in range(len(df1)):
+    row_values = [value for value in df1.iloc[i][1:] if not pd.isna(value)]
+    #iterating each row, if not nan, then append it to row_values, then append the updated row into newset1
+    newset1.append(row_values)
+
+newset1[:5]
+
+
+Frequent_itemsets_1, Assoc_Rules_1 = apriori(newset1, min_support=0.50, min_confidence=0.75)
