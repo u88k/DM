@@ -1,0 +1,34 @@
+from sklearn.neighbors import KNeighborsClassifier
+
+knn = KNeighborsClassifier()
+knn.fit(x_train,y_train)
+knn_prediction = knn.predict(x_test)
+
+knn_matrix = confusion_matrix(y_test,knn_prediction)
+knn_cmatrix = ConfusionMatrixDisplay(confusion_matrix = knn_matrix)
+knn_cmatrix.plot()
+plt.title("KNN classification")
+plt.show()
+
+
+knn_acc = accuracy_score(y_test,knn_prediction)
+print("Accuracy using KNN classifier :",knn_acc)
+
+
+print(classification_report(y_test,knn_prediction))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
