@@ -1,0 +1,44 @@
+from sklearn.datasets import load_iris
+import pandas as pd
+import numpy as np
+
+
+iris=load_iris()
+x=pd.DataFrame(iris.data, columns=iris.feature_names)
+y=pd.DataFrame(iris.target)
+
+x.head()
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler=MinMaxScaler()
+normalized_df=pd.DataFrame(scaler.fit_transform(x),columns=iris.feature_names)
+normalized_df.head()
+
+from sklearn.model_selection import train_test_split, KFold , cross_val_score
+
+xtrain, xtest ,ytrain, ytest = train_test_split(x,y,test_size=0.33,random_state= 42)
+
+from sklearn.tree import DecisionTreeClassifier
+
+dtree=DecisionTreeClassifier()
+model=dtree.fit(xtrain,ytrain)
+ypredicted=model.predict(xtest)
+ypredicted
+
+
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix, accuracy_score, confusion_matrix,ConfusionMatrixDisplay
+
+# Calculate the accuracy score
+accuracy = accuracy_score(ytest, ypredicted)
+print("Accuracy:", accuracy)
+
+# Generate the confusion matrix
+cm = confusion_matrix(ytest, ypredicted)
+print("Confusion Matrix:")
+print(cm)
+
+# Display the confusion matrix visually
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=iris.target_names)
+disp.plot()
