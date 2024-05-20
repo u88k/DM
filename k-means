@@ -1,0 +1,140 @@
+from sklearn.cluster import KMeans #clustering technique - for unsupervised learning
+import pandas as pd # for data formatting and manipulation
+from sklearn.preprocessing import MinMaxScaler # for normalization
+import matplotlib.pyplot as plt # for plotting i.e. data and result visualization
+from sklearn.datasets import load_wine # dataset used
+from sklearn.metrics import accuracy_score #to calculate accuracy
+
+wine = load_wine()
+df = pd.DataFrame(wine.data, columns = wine.feature_names)
+df.head()
+
+df.shape #0 to 12 - columns
+
+df.info() #for consized summary of your whole data
+
+
+scaler = MinMaxScaler()
+temp = scaler.fit_transform(df) #returns array, hence needed to be converted into dataframe again
+normalized_df = pd.DataFrame(temp, columns = wine.feature_names)
+normalized_df.head()
+
+from yellowbrick.cluster import KElbowVisualizer #tool for visualizing the elbow method.
+model = KMeans() #initializes the models
+#the above model will be used to predict and choose the best number of clusters
+visulizer = KElbowVisualizer(model,k=(1,10),timings = False) #range of number of clusters 1 to 10
+#  the time taken to fit the KMeans model for each value of k
+# will not be recorded or displayed in the elbow plot
+visulizer.fit(normalized_df)
+visulizer.show()
+
+km = KMeans(n_clusters = 3)
+km.get_params()
+
+y_predicted = km.fit_predict(normalized_df)
+y_predicted
+
+len(y_predicted)
+
+normalized_df['clusters'] = y_predicted
+normalized_df.head()
+
+km.cluster_centers_
+
+df1 = normalized_df[normalized_df.clusters==0]
+df2 = normalized_df[normalized_df.clusters==1]
+df3 = normalized_df[normalized_df.clusters==2]
+
+plt.scatter(df1.iloc[:,9], df1.iloc[:,12], color = 'green')
+plt.scatter(df2.iloc[:,9], df2.iloc[:,12], color = 'red')
+plt.scatter(df3.iloc[:,9], df3.iloc[:,12], color = 'black')
+
+plt.legend()
+
+arr = wine.target
+arr
+
+temp1 = pd.Series(arr)
+h = temp1.value_counts()
+h2 = h.sort_index()
+h2
+
+L = [len(df1), len(df2),len(df3)]
+print("Count")
+temp2 = pd.DataFrame({'Predicted':L, 'Actucal':h2})
+display(temp2)
+
+accuracy = accuracy_score(temp1, y_predicted)
+print(f'Accuracy: {accuracy}')
+
+#now taking any two attributes to plot the clusters from normalized_df
+#corresponding to the original clusters (target)
+
+normalized_df['target'] = temp1
+normalized_df.head()
+
+
+t_df1 = normalized_df[normalized_df.target==0]
+t_df2 = normalized_df[normalized_df.target==1]
+t_df3 = normalized_df[normalized_df.target==2]
+
+plt.scatter(t_df1.iloc[:,9], t_df1.iloc[:,12], color = 'green')
+plt.scatter(t_df2.iloc[:,9], t_df2.iloc[:,12], color = 'red')
+plt.scatter(t_df3.iloc[:,9], t_df3.iloc[:,12], color = 'black')
+
+plt.legend()
+
+
+import numpy as np
+rand = list(np.random.randint(0,len(normalized_df),10))
+rand
+
+actual_label = normalized_df['target'].iloc[rand]
+x = normalized_df['clusters'].iloc[rand]
+
+print("Index (normalized_df): ", rand)
+print("Actual Labels:         ", list(actual_label))
+print("Predicted Labels:      ", list(x))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
